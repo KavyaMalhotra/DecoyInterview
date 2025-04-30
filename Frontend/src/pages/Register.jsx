@@ -1,4 +1,6 @@
 import { useState } from 'react';
+import axios from 'axios';
+import { useNavigate } from 'react-router-dom'; // For redirecting to login page
 
 function Register() {
   const [fullName, setFullName] = useState('');
@@ -6,13 +8,43 @@ function Register() {
   const [age, setAge] = useState('');
   const [gender, setGender] = useState('');
   const [password, setPassword] = useState('');
+  const navigate = useNavigate(); // Hook to redirect to another page
+
+  const handleSubmit = async (e) => {
+    e.preventDefault(); // Prevent page reload
+
+    try {
+      const response = await axios.post(`${import.meta.env.VITE_BACKEND_URI}/api/users/register`, {
+        fullName,
+        email,
+        age,
+        gender,
+        password,
+      });
+
+      console.log('Success:', response.data);
+      alert('Registration successful!');
+      
+      // Redirect to login page after successful registration
+      navigate('/login'); // Adjust based on your routes
+
+      // Optionally reset fields
+      setFullName('');
+      setEmail('');
+      setAge('');
+      setGender('');
+      setPassword('');
+    } catch (error) {
+      console.error('Registration failed:', error.response?.data || error.message);
+      alert('Registration failed. Check console for details.');
+    }
+  };
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-slate-900 text-white font-inter px-4">
       <div className="bg-slate-800 p-8 rounded-xl shadow-lg w-full max-w-md border border-slate-700">
         <h2 className="text-3xl font-bold mb-6 text-center">Create Your Account</h2>
-        <form className="space-y-4">
-          {/* Full Name Field */}
+        <form className="space-y-4" onSubmit={handleSubmit}>
           <input
             type="text"
             placeholder="Full Name"
@@ -21,7 +53,6 @@ function Register() {
             className="w-full p-3 bg-slate-700 text-white placeholder-slate-400 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
 
-          {/* Email Field */}
           <input
             type="email"
             placeholder="Email"
@@ -30,7 +61,6 @@ function Register() {
             className="w-full p-3 bg-slate-700 text-white placeholder-slate-400 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
 
-          {/* Age Field */}
           <input
             type="number"
             placeholder="Age"
@@ -39,7 +69,6 @@ function Register() {
             className="w-full p-3 bg-slate-700 text-white placeholder-slate-400 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
 
-          {/* Gender Field */}
           <div className="w-full p-3 bg-slate-700 text-white placeholder-slate-400 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
             <select
               value={gender}
@@ -53,7 +82,6 @@ function Register() {
             </select>
           </div>
 
-          {/* Password Field */}
           <input
             type="password"
             placeholder="Password"
@@ -62,7 +90,6 @@ function Register() {
             className="w-full p-3 bg-slate-700 text-white placeholder-slate-400 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
 
-          {/* Submit Button */}
           <button
             type="submit"
             className="w-full bg-blue-600 hover:bg-blue-500 text-white font-semibold py-2.5 rounded-lg shadow transition-all duration-200 cursor-pointer"

@@ -1,15 +1,38 @@
 import { useState } from 'react';
+import axios from 'axios';
+import { useNavigate } from 'react-router-dom'; // v6+ uses useNavigate
 
 function Login() {
-  // State hooks for form data
-  const [username, setUsername] = useState('');
+  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const navigate = useNavigate(); // New way to handle navigation
 
-  // Handle form submission
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // You can later add code here to send the login data to the backend
-    console.log('Logging in with:', { username, password });
+
+    try {
+      const response = await axios.post(`${import.meta.env.VITE_BACKEND_URI}/api/users/login`, {
+        email,
+        password,
+      });
+
+      if (response.data.message === 'Login successful!') {
+        alert('Login successful!');
+        navigate('/start'); // Take the user to the start page
+      }
+    } catch (error) {
+      const msg = error.response?.data?.message;
+
+      if (msg === 'Wrong password') {
+        alert('Wrong password. Please try again.');
+      } else if (msg === 'Email not found') {
+        alert('Email not found. Please register first.');
+        navigate('/register');
+      } else {
+        console.error('Login failed:', error);
+        alert('An error occurred. Please try again later.');
+      }
+    }
   };
 
   return (
@@ -17,16 +40,14 @@ function Login() {
       <div className="bg-slate-800 p-8 rounded-xl shadow-lg w-full max-w-md border border-slate-700">
         <h2 className="text-3xl font-bold mb-6 text-center">Welcome Back</h2>
         <form className="space-y-4" onSubmit={handleSubmit}>
-          {/* Username Input */}
           <input
-            type="text"
-            placeholder="Username"
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
+            type="email"
+            placeholder="Email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
             className="w-full p-3 bg-slate-700 text-white placeholder-slate-400 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
-          
-          {/* Password Input */}
+
           <input
             type="password"
             placeholder="Password"
@@ -34,13 +55,12 @@ function Login() {
             onChange={(e) => setPassword(e.target.value)}
             className="w-full p-3 bg-slate-700 text-white placeholder-slate-400 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
-          
-          {/* Submit Button */}
+
           <button
             type="submit"
             className="w-full bg-blue-600 hover:bg-blue-500 text-white font-semibold py-2.5 rounded-lg shadow transition-all duration-200 cursor-pointer"
           >
-            Submit
+            Login
           </button>
         </form>
       </div>

@@ -1,12 +1,30 @@
-import { Link, useNavigate } from 'react-router-dom';
+// src/pages/Start.jsx
+
+import { useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import Button from '../components/Button';
 
 function Start() {
   const navigate = useNavigate();
 
+  useEffect(() => {
+    // 🔍 Check for active media stream and shut it down if it exists
+    const turnOffCamera = () => {
+      const videoElements = document.querySelectorAll('video');
+      videoElements.forEach(video => {
+        const stream = video.srcObject;
+        if (stream && stream.getTracks) {
+          stream.getTracks().forEach(track => track.stop());
+          video.srcObject = null;
+          console.log('📷 Camera stream stopped');
+        }
+      });
+    };
+
+    turnOffCamera();
+  }, []);
+
   const handleLogout = () => {
-    // Clear auth state (if any) — you can hook in localStorage/session logic here
-    // For now, just redirect to login
     alert('Logged out successfully!');
     navigate('/login');
   };

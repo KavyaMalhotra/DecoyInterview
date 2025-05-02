@@ -14,7 +14,7 @@ function Login() {
       const response = await axios.post(`${import.meta.env.VITE_BACKEND_URI}/api/users/login`, {
         email,
         password,
-      });
+      }, { withCredentials: true }   );       // <— this lets Axios accept & store the cookie
 
       if (response.data.message === 'Login successful!') {
         alert('Login successful!');

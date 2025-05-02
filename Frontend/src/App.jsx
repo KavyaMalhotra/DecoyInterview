@@ -6,6 +6,7 @@ import Login from './pages/Login';
 import Register from './pages/Register';
 import Interview from './pages/Interview';
 import Start from './pages/Start'; // Assuming you have a Start page
+import Result from './pages/Result';
 import Button from './components/Button'; // We'll create this in step 2
 
 function App() {
@@ -20,6 +21,7 @@ function App() {
           <Route path="/register" element={<Register />} />
           <Route path="/interview" element={<Interview />} />
           <Route path="/start" element={<Start />} /> {/* New Start page route */}
+          <Route path="/result" element={<Result />} /> {/* New Result page route */}
           {/* Add more routes as needed */}
         </Routes>
 
